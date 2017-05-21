@@ -40,6 +40,17 @@ public class Roteador {
         sender.start();
         receiver.start();
         
+        while(true){
+            tabela.addTimeToDie();
+            tabela.removeDeadLines();
+            
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Roteador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
     
 }

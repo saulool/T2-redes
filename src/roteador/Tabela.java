@@ -13,11 +13,21 @@ public class Tabela {
     public String ip_destino;
     public String ip_saida;
     public Integer metrica;
+    public Integer timeToDie;
     
     public Tabela(String ip_destino, Integer metrica, String ip_saida){
         this.ip_destino = ip_destino;
         this.ip_saida = ip_saida;
         this.metrica = metrica;
+        this.timeToDie = 0;
+    }
+
+    public Integer getTimeToDie() {
+        return timeToDie;
+    }
+
+    public void setTimeToDie(Integer timeToDie) {
+        this.timeToDie = timeToDie;
     }
 
     public String getIp_destino() {
