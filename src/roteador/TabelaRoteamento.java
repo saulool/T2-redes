@@ -45,16 +45,18 @@ public class TabelaRoteamento {
         
         for (Tabela decodedLine : decodedTable) {            
             if(addressExistsInTable(decodedLine.getIp_destino())){
-                if(metricIsLower(decodedLine)){
+                if(metricIsLower(decodedLine) && !ipSaidaExistsInTable(decodedLine.getIp_saida())){
                     updateTableLine(decodedLine);
+                    sendMessage();
                 }
             }else{
                 if(!itsMyAddress(decodedLine)){
-                    if(!isMyNeighbor(decodedLine.getIp_saida())){
+                    if(!isMyNeighbor(decodedLine.getIp_destino())){
                         decodedLine.setMetrica(decodedLine.getMetrica()+1);
                     }
                     
                     tabelaRoteamento.add(decodedLine);
+                    sendMessage();
                 }
             }
         }
@@ -94,9 +96,19 @@ public class TabelaRoteamento {
         return false;
     }
     
-    private Boolean addressExistsInTable(String ip){
+    private Boolean ipSaidaExistsInTable(String ip_saida){
         for (Tabela tabelaRot : tabelaRoteamento) {
-            if(tabelaRot.getIp_destino().equals(ip)){
+            if(tabelaRot.getIp_saida().equals(ip_saida)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private Boolean addressExistsInTable(String ip_destino){
+        for (Tabela tabelaRot : tabelaRoteamento) {
+            if(tabelaRot.getIp_destino().equals(ip_destino)){
                 return true;
             }
         }
