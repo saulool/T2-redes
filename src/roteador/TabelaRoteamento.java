@@ -1,7 +1,14 @@
 package roteador;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TabelaRoteamento {
     /*Implemente uma estrutura de dados para manter a tabela de roteamento. 
@@ -45,13 +52,18 @@ public class TabelaRoteamento {
         
         for (Tabela decodedLine : decodedTable) {            
             if(addressExistsInTable(decodedLine.getIp_destino())){
-                if(metricIsLower(decodedLine) && !ipSaidaExistsInTable(decodedLine.getIp_saida())){
-                    updateTableLine(decodedLine);
-                    sendMessage();
+                if(isMyNeighbor(decodedLine.getIp_destino(), decodedLine.getIp_destino())){
+                    Tabela newLine = new Tabela(decodedLine.getIp_destino(), 1, decodedLine.getIp_destino());
+                    updateTableLine(newLine);
+                }else{
+                    if(metricIsLower(decodedLine) && !ipSaidaExistsInTable(decodedLine.getIp_saida())){
+                        updateTableLine(decodedLine);
+                        sendMessage();
+                    }
                 }
             }else{
                 if(!itsMyAddress(decodedLine)){
-                    if(!isMyNeighbor(decodedLine.getIp_destino())){
+                    if(!isMyNeighbor(decodedLine.getIp_destino(), decodedLine.getIp_saida())){
                         decodedLine.setMetrica(decodedLine.getMetrica()+1);
                     }
                     
@@ -105,9 +117,9 @@ public class TabelaRoteamento {
         }
     }
     
-    private Boolean isMyNeighbor(String ip){
+    private Boolean isMyNeighbor(String ip_destino, String ip_saida){
         for (String neighbor : NEIGHBORS) {
-            if(neighbor.equals(ip)) return true;
+            if(neighbor.equals(ip_destino) && neighbor.equals(ip_saida)) return true;
         }
         
         return false;
@@ -146,9 +158,9 @@ public class TabelaRoteamento {
         return false;
     }
     
-    private Boolean addressExistsInTable(String ip_destino){
+    private Boolean addressExistsInTable(String ip){
         for (Tabela tabelaRot : tabelaRoteamento) {
-            if(tabelaRot.getIp_destino().equals(ip_destino)){
+            if(tabelaRot.getIp_destino().equals(ip)){
                 return true;
             }
         }
