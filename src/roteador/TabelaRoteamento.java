@@ -56,9 +56,14 @@ public class TabelaRoteamento {
                     Tabela newLine = new Tabela(decodedLine.getIp_destino(), 1, decodedLine.getIp_destino());
                     updateTableLine(newLine);
                 }else{
-                    if(metricIsLower(decodedLine) && !ipSaidaExistsInTable(decodedLine.getIp_saida())){
+                    if(ipSaidaNotFromNeighbor(decodedLine.getIp_saida())){
+                        decodedLine.setMetrica(decodedLine.getMetrica()+1);
                         updateTableLine(decodedLine);
-                        sendMessage();
+                    }else{
+                        if(metricIsLower(decodedLine) && !ipSaidaExistsInTable(decodedLine.getIp_saida())){
+                            updateTableLine(decodedLine);
+                            sendMessage();
+                        }
                     }
                 }
             }else{
@@ -75,6 +80,14 @@ public class TabelaRoteamento {
         
         System.out.println("Minha tabela:\n");
         System.out.println(printTable(tabelaRoteamento));
+    }
+    
+    private Boolean ipSaidaNotFromNeighbor(String ip_saida){
+        for (String neighbor : NEIGHBORS) {
+            if(neighbor.equals(ip_saida)) return true;
+        }
+        
+        return false;
     }
     
     private void sendMessage(){
