@@ -65,6 +65,46 @@ public class TabelaRoteamento {
         System.out.println(printTable(tabelaRoteamento));
     }
     
+    private void sendMessage(){
+        DatagramSocket clientSocket = null;
+        byte[] sendData;
+        InetAddress IPAddress = null;
+        
+        /* Cria socket para envio de mensagem */
+        try {
+            clientSocket = new DatagramSocket();
+        } catch (SocketException ex) {
+            Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        
+        String tabela_string = get_tabela_string();
+
+        /* Converte string para array de bytes para envio pelo socket. */
+        sendData = tabela_string.getBytes();
+
+        /* Anuncia a tabela de roteamento para cada um dos vizinhos */
+        for (String ip : NEIGHBORS){
+            /* Converte string com o IP do vizinho para formato InetAddress */
+            try {
+                IPAddress = InetAddress.getByName(ip);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
+
+            /* Configura pacote para envio da menssagem para o roteador vizinho na porta 5000*/
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 5000);         
+
+            /* Realiza envio da mensagem. */
+            try {
+                clientSocket.send(sendPacket);
+            } catch (IOException ex) {
+                Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     private Boolean isMyNeighbor(String ip){
         for (String neighbor : NEIGHBORS) {
             if(neighbor.equals(ip)) return true;
