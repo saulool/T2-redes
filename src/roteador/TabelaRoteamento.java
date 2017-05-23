@@ -79,6 +79,7 @@ public class TabelaRoteamento {
         for (Tabela tabelaRot : tabelaRoteamento) {
             if(tabelaRot.getIp_destino().equals(newLine.getIp_destino())){
                 tabelaRot.setMetrica(newLine.getMetrica());
+                tabelaRot.setIp_saida(newLine.getIp_saida());
             }
         }
     }
