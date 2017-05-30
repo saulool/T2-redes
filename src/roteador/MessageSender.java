@@ -57,6 +57,7 @@ public class MessageSender implements Runnable{
                 /* Realiza envio da mensagem. */
                 try {
                     clientSocket.send(sendPacket);
+                    System.out.println("Enviando mensagem: " + tabela_string + " de " + IPAddress.getHostAddress());
                 } catch (IOException ex) {
                     Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
                 }
