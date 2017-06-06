@@ -36,7 +36,7 @@ public class MessageSender implements Runnable{
         while(true){
             
             /* Pega a tabela de roteamento no formato string, conforme especificado pelo protocolo. */
-            String tabela_string = tabela.chamaFunc("get", null, null);
+            String tabela_string = tabela.get_tabela_string();
                
             /* Converte string para array de bytes para envio pelo socket. */
             sendData = tabela_string.getBytes();
